@@ -1,0 +1,152 @@
+<?php
+declare(strict_types = 1);
+
+namespace Isfett\WowClassicHunterMeleeWeavingEfficiency\Tests\Unit\Node;
+
+use Isfett\WowClassicHunterMeleeWeavingEfficiency\DAO\Occurrence;
+use PhpParser\Node;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Finder\SplFileInfo;
+
+/**
+ * Class NodeTestCase
+ */
+abstract class AbstractNodeTestCase extends TestCase
+{
+    /**
+     * @param Node $node
+     *
+     * @return Occurrence
+     */
+    protected function createOccurrence(Node $node): Occurrence
+    {
+        /** @var SplFileInfo|MockObject $splFileInfo */
+        $splFileInfo = $this->createSplFileInfoMock();
+
+        return new Occurrence($node, $splFileInfo);
+    }
+
+    /**
+     * @return Occurrence
+     */
+    protected function createFakeOccurrence(): Occurrence
+    {
+        /** @var SplFileInfo|MockObject $splFileInfo */
+        $splFileInfo = $this->createSplFileInfoMock();
+
+        $node = $this->createMock(Node::class);
+
+        return new Occurrence($node, $splFileInfo);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Node\Expr\Variable
+     */
+    protected function createVariableNode(string $name = 'mockedVariableName'): Node\Expr\Variable
+    {
+        return new Node\Expr\Variable($name, $this->getNodeAttributes());
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return Node\Scalar\String_
+     */
+    protected function createScalarStringNode(string $value): Node\Scalar\String_
+    {
+        return new Node\Scalar\String_($value, $this->getNodeAttributes());
+    }
+
+    /**
+     * @param int $value
+     *
+     * @return Node\Scalar\LNumber
+     */
+    protected function createLNumberNode(int $value): Node\Scalar\LNumber
+    {
+        $isMinus = false;
+        if ($value < 0) {
+            $value *= -1;
+            $isMinus = true;
+        }
+
+        $node = new Node\Scalar\LNumber($value, $this->getNodeAttributes());
+
+        if ($isMinus) {
+            $node->setAttribute('parent', new Node\Expr\UnaryMinus($node));
+        }
+
+        return $node;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Node\Name
+     */
+    protected function createNameNode(string $name = 'mockedName'): Node\Name
+    {
+        return new Node\Name($name, $this->getNodeAttributes());
+    }
+
+    /**
+     * @param string $name
+     * @param bool   $nullable
+     *
+     * @return Node\Identifier
+     */
+    protected function createIdentifierNode(string $name = 'mockedName', bool $nullable = false): Node
+    {
+        $identifier = new Node\Identifier($name, $this->getNodeAttributes());
+
+        if ($nullable) {
+            $identifier = new Node\NullableType($identifier, $this->getNodeAttributes());
+        }
+
+        return $identifier;
+    }
+
+    /**
+     * @param Node\Expr $node
+     * @param bool      $byRef
+     * @param bool      $unpack
+     *
+     * @return Node\Arg
+     */
+    protected function createArgNode(Node\Expr $node, $byRef = false, $unpack = false): Node\Arg
+    {
+        return new Node\Arg($node, $byRef, $unpack, $this->getNodeAttributes());
+    }
+
+    /**
+     * @return MockObject
+     */
+    protected function createSplFileInfoMock(): MockObject
+    {
+        return $this->createMock(SplFileInfo::class);
+    }
+
+    /**
+     * @param int       $startLine
+     * @param int       $endLine
+     * @param Node|null $parent
+     *
+     * @return array
+     */
+    protected function getNodeAttributes(int $startLine = 1, int $endLine = 1, ?Node $parent = null): array
+    {
+        $attributes = [
+            'startLine' => $startLine,
+            'endLine' => $endLine,
+        ];
+
+        if (null !== $parent) {
+            $attributes['parent'] = $parent;
+        }
+
+        return $attributes;
+    }
+}

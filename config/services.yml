@@ -1,0 +1,14 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  Isfett\WowClassicHunterMeleeWeavingEfficiency\:
+    resource: '../src'
+
+  Isfett\WowClassicHunterMeleeWeavingEfficiency\DAO\:
+    resource: '../src/DAO'
+    autowire: false
+
+  Isfett\WowClassicHunterMeleeWeavingEfficiency\Console\Application:
+    public: true

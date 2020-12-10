@@ -1,0 +1,48 @@
+{
+    "name": "isfett/wow-classic-hunter-melee-weaving-efficiency",
+    "type": "application",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Christopher Stenke",
+            "email": "chris@isfett.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/isfett/wow-classic-hunter-melee-weaving-efficiency/issues"
+    },
+    "bin": ["bin/wow-classic-hunter-melee-weaving-efficiency"],
+    "require": {
+        "php": "^7.1",
+        "symfony/console": "^3.4 || ^4.0",
+        "symfony/dependency-injection": "^3.4 || ^4.3",
+        "symfony/config": "^3.4 || ^4.3",
+        "symfony/http-kernel": "^3.4 || ^4.3",
+        "symfony/yaml": "^3.4 || ^4.3",
+        "doctrine/collections": "^1.6",
+        "symfony/event-dispatcher": "^3.4 || ^4.3",
+        "symfony/serializer": "^3.4 || 4.4.x-dev",
+        "symfony/dom-crawler": "^4.4",
+        "symfony/http-client": "^4.4",
+        "symfony/css-selector": "^4.4",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "isfett/coding-standard": "^1.0",
+        "phpunit/phpunit": "^7.0 || ^8.0",
+        "squizlabs/php_codesniffer": "3.*",
+        "phpmd/phpmd" : "@stable",
+        "phpstan/phpdoc-parser": "0.3.5 - 0.4.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Isfett\\WowClassicHunterMeleeWeavingEfficiency\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Isfett\\WowClassicHunterMeleeWeavingEfficiency\\Tests\\": "tests/",
+            "SlevomatCodingStandard\\": "vendor/isfett/coding-standard/phpcs/SlevomatCodingStandard"
+        }
+    }
+}

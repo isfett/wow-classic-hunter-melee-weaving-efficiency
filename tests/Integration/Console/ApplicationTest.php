@@ -1,0 +1,103 @@
+<?php
+declare(strict_types = 1);
+
+namespace Isfett\WowClassicHunterMeleeWeavingEfficiency\Tests\Integration\Console;
+
+use Isfett\WowClassicHunterMeleeWeavingEfficiency\Console\Application;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
+
+/**
+ * Class ApplicationTest
+ */
+class ApplicationTest extends TestCase
+{
+    /** @var string */
+    private const APPLICATION_INFO = 'wow-classic-hunter-melee-weaving-efficiency 1.0.0 by Christopher Stenke <chris@isfett.com>' . \PHP_EOL;
+
+    /** @var Application */
+    private $application;
+
+    /**
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->application = new Application();
+    }
+
+    /**
+     * @return void
+     * @throws \Exception
+     * @throws \Throwable
+     */
+    public function testApplicationAndAuthorInfo(): void
+    {
+        $input = new ArrayInput([]);
+
+        $output = new BufferedOutput();
+        $this->application->doRun($input, $output);
+
+        $this->assertStringStartsWith(
+            self::APPLICATION_INFO,
+            $output->fetch()
+        );
+    }
+
+    /**
+     * @return void
+     * @throws \Exception
+     * @throws \Throwable
+     */
+    public function testApplicationAndAuthorInfoIsHiddenWhenInQuietMode(): void
+    {
+        $input = new ArrayInput([
+            '--quiet' => true,
+        ]);
+
+        $output = new BufferedOutput();
+        $exitCode = $this->application->doRun($input, $output);
+
+        $this->assertStringStartsWith(
+            'Description',
+            $output->fetch()
+        );
+        $this->assertSame(Application::EXIT_CODE_SUCCESS, $exitCode);
+
+        $input = new ArrayInput([
+            '-q' => true,
+        ]);
+
+        $output = new BufferedOutput();
+        $exitCode = $this->application->doRun($input, $output);
+
+        $this->assertStringStartsWith(
+            'Description',
+            $output->fetch()
+        );
+        $this->assertSame(Application::EXIT_CODE_SUCCESS, $exitCode);
+    }
+
+    /**
+     * @return void
+     * @throws \Exception
+     * @throws \Throwable
+     */
+    public function testApplicationVersion(): void
+    {
+        $input = new ArrayInput([
+            '--version' => true,
+        ]);
+
+        $output = new BufferedOutput();
+        $exitCode = $this->application->doRun($input, $output);
+        $this->assertSame(
+            self::APPLICATION_INFO,
+            $output->fetch()
+        );
+        $this->assertSame(Application::EXIT_CODE_SUCCESS, $exitCode);
+    }
+}
